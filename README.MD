@@ -8,20 +8,28 @@ Specifically, this workshop will cover:
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
-- [Step 1: Verify the application locally](#step-2-connect-to-your-instance)
-- [Step 2: Deploy the RDS DB](#step-1-launch-an-instance)
-- [Step 3: Attach RDS DB to your Flask application](#step-3-update-and-install-packages)
-- [Step 4: Deploy application to Lightsail](#step-3-update-and-install-packages)
+- [Step 0: Set up Docker (optional)](#step-0-set-up-docker-optional)
+- [Step 1: Verify the application locally](#step-1-verify-the-application-locally)
+- [Step 2: Deploy the RDS DB](#step-2-deploy-the-rds-db)
+- [Step 3: Attach RDS DB to your Flask application](#step-3-attach-rds-db-to-your-flask-application)
+- [Step 4: Deploy application to Lightsail](#step-4-deploy-application-to-lightsail)
 - [Conclusion](#Conclusion)
 
 ## Prerequisites
-An Amazon Web Services (AWS) account
 
-Basic knowledge of the Linux command line
+Ensure you have the following before embarking on this workshop:
+- An Amazon Web Services (AWS) account
+- Docker installed on your laptop
+- A Docker Account
+- Basic knowlege on Linux commands
+
+## Step 0: Set up Docker (Optional)
 
 ## Step 1: Verify the application locally
 
 Step 1. Go to your Flask application [todo.py](./todo.py)
+
+This is a Python REST API, using the Flask simple application framework. Any programming language and any framework that can run inside a container works too. We have chosen Python and Flask because they are simple and elegant.
 
 Step 2. Ensure the local deployment is uncommented, and the lightsail deployment is commented out. 
 
@@ -29,7 +37,7 @@ Step 2. Ensure the local deployment is uncommented, and the lightsail deployment
 
 Step 3. Go to your [Dockerfile](./Dockerfile) and verify the build
 
-Step 4. In your terminal, build the application, then run it to test that it is working.
+Step 4. In your terminal, build the application and run it to test
 
 ```
 docker build -t lightsail-todo-local .
@@ -37,10 +45,9 @@ docker build -t lightsail-todo-local .
 docker run -it --rm -p 8080:8080 lightsail-todo-local
 ```
 
-You should see the following
+Connect a browser to localhost:8080, you should see the following
 
 ![image](./media/images/app.png)
-
 
 ## Step 2: Deploy the RDS DB
 
@@ -74,8 +81,7 @@ Step 11. In the Connectivity section:
 
 ![image](./media/images/gid-rds-create-07.jpg)
 
-
-Step 12. For Database authentication, there are two options to select from. Password Authentication will authenticate the user only with the database password. With Password and IAM Database authentication, the user will be authenticated with the database password and also with the user credentials through IAM roles and policies. For this lab, we will select: Password Authentication.
+Step 12. For Database authentication, select: Password Authentication.
 
 Step 13. Expand on Additional Configuration. For the Database options, provide the following:
 - Initial Database name: lightsaildb
