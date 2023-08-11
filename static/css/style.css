@@ -1,0 +1,11 @@
+/* static/css/style.css */
+body {
+    margin: 20px;
+}
+.todo-container {
+    max-width: 600px;
+    margin: auto;
+}
+.todo-form {
+    margin-bottom: 20px;
+}

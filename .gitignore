@@ -1,0 +1,5 @@
+# Flask specific
+instance/
+
+# Dev specific
+secrets_manager.py
