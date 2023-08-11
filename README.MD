@@ -63,7 +63,7 @@ Step 3. For Choose a database creation method, select Standard option. With Stan
 
 Step 4. Select MySQL in Engine Options
 
-Step 5. When you select MySQL as your database engine, the latest version will be automatically selected for you. For this lab, select MySQL version X.X.X.
+Step 5. When you select MySQL as your database engine, the latest version will be automatically selected for you. For this lab, select MySQL version 8.0.33
 
 Step 6. For Template, there are three options available: Production, Dev/Test and Free Tier. For the lab purpose, we will select Free Tier
 
@@ -85,7 +85,7 @@ Step 12. For Database authentication, select: Password Authentication.
 
 Step 13. Expand on Additional Configuration. For the Database options, provide the following:
 - Initial Database name: lightsaildb
-- DB Parameter group and Option group: default.mysqlx.x
+- DB Parameter group and Option group: default.mysqlx8.0
 
 Step 14. For Backup:
 - Check on enable automatic backups.
