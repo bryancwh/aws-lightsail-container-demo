@@ -12,7 +12,7 @@ Specifically, this workshop will cover:
 - [Step 2: Deploy the RDS DB](#step-1-launch-an-instance)
 - [Step 3: Attach RDS DB to your Flask application](#step-3-update-and-install-packages)
 - [Step 4: Deploy application to Lightsail](#step-3-update-and-install-packages)
-- [Cleanup](#Cleanup)
+- [Conclusion](#Conclusion)
 
 ## Prerequisites
 An Amazon Web Services (AWS) account
@@ -20,6 +20,27 @@ An Amazon Web Services (AWS) account
 Basic knowledge of the Linux command line
 
 ## Step 1: Verify the application locally
+
+Step 1. Go to your Flask application [todo.py](./todo.py)
+
+Step 2. Ensure the local deployment is uncommented, and the lightsail deployment is commented out. 
+
+![image](./media/images/local_code.png)
+
+Step 3. Go to your [Dockerfile](./Dockerfile) and verify the build
+
+Step 4. In your terminal, build the application, then run it to test that it is working.
+
+```
+docker build -t lightsail-todo-local .
+
+docker run -it --rm -p 8080:8080 lightsail-todo-local
+```
+
+You should see the following
+
+![image](./media/images/app.png)
+
 
 ## Step 2: Deploy the RDS DB
 
@@ -51,7 +72,7 @@ Step 10. Since we selected the Template option as Free Tier-used only for doing 
 
 Step 11. In the Connectivity section:
 
-![imgage](./media/images/gid-rds-create-07.jpg)
+![image](./media/images/gid-rds-create-07.jpg)
 
 
 Step 12. For Database authentication, there are two options to select from. Password Authentication will authenticate the user only with the database password. With Password and IAM Database authentication, the user will be authenticated with the database password and also with the user credentials through IAM roles and policies. For this lab, we will select: Password Authentication.
@@ -79,13 +100,13 @@ In order for Lightsail resources to communicate with other AWS resources, you ne
 
 Step 1. Go to the Lightsail console home page and click Account in the top right corner. Choose Account from the pop out menu.
 
-![imgage](./media/images/account_menu.png)
+![image](./media/images/account_menu.png)
 
 Step 2. Click on Advanced from the horizontal menu
 
 Step 3. Under VPC peering ensure the Enable VPC peering box is checked for the region where your application is deployed.
 
-![imgage](./media/images/vpc_peering.png)
+![image](./media/images/vpc_peering.png)
 
 ### 3.2 Edit RDS Security Group
 The next step is to edit the security group for the RDS instance to allow traffic from the Lightsail subnet
@@ -98,11 +119,11 @@ Step 3. Click on the name of the database you created at the beginning of the wo
 
 Step 4. Under Connectivity and security click on the security group name
 
-![imgage](./media/images/rds_sg.png)
+![image](./media/images/rds_sg.png)
 
 Step 5. Click the Inbound tab near the bottom of the screen and click the Edit button
 
-![imgage](./media/images/sg_edit.png)
+![image](./media/images/sg_edit.png)
 
 Step 6. Click Add rule in the pop up box
 
@@ -110,7 +131,7 @@ Step 7. From the Type drop down choose MySQL/Aurora
 
 Step 8. In the source box enter 172.26.0.0/16 (this is the CIDR address for the Lightsail subnet)
 
-![imgage](./media/images/sg_values.png)
+![image](./media/images/sg_values.png)
 
 Step 9. Click Save
 
@@ -120,20 +141,71 @@ Step 1. Return to the RDS console entry for your RDS database
 
 Step 2. Under Connectivity and security copy the Endpoint value
 
-![imgage](./media/images/rds_endpoint.png)
+![image](./media/images/rds_endpoint.png)
 
 Step 3. Go to you Flask application [todo.py](./todo.py)
 
 Step 4. Change the SQLAlchemy Database URI to use the RDS DB Endpoint
 
-![imgage](./media/images/todo_code.png)
+![image](./media/images/todo_code.png)
 
 ## Step 4: Deploy Container to Lightsail
 
-### 4.4 Verify the application
-Now you’ll verify that the application installed correctly and is correctly communicating with the RDS MySQL database.
+### 4.1 Build and deploy the container to Docker Hub
 
-The diagram below lays out the current architecture of the application.
+Step 1. Build the container 
 
-## Cleanup
-Congratulations! You have successfully set up a LAMP stack on your Amazon Lightsail instance. You now have a functional environment for hosting websites and applications that require a web server, database, and server-side scripting.
+```
+docker buildx build --platform linux/amd64 -t lightsail-todo .
+```
+
+Step 2. Push the container to Docker Hub
+
+```
+docker tag lightsail-todo bryancwh/lightsail-todo
+docker login
+docker push bryancwh/lightsail-todo
+```
+
+Step 3. Go to Docker Hub and verify that your docker has been pushed
+
+![image](./media/images/docker.png)
+
+### 4.2 Create a Lightsail container service 
+
+Now that you have a container ready on Docker Hub, let’s create a Lightsail Container Service.
+
+Step 1. Go to Lightsail console and click Create container service
+
+![image](./media/images/lightsail.png)
+
+Step 2. Select the size of the container you want to use in terms of vCPU and memory available to my application Select the number of container instances you want to run in parallel for high availability or scalability reasons. 
+
+![image](./media/images/container_capacity.png)
+
+> **_NOTE:_** You can change the number of container instances or their power (vCPU and RAM) at any time, without interrupting the service. 
+
+Step 3. Click on **Set up deployment** and specify a customer deployment. Choose name for your image and give the address of the image on Docker Hub. 
+
+![image](./media/images/set_up_deployment.png)
+
+Step 4. Specify a name for your container service 
+
+![image](./media/images/identify_service.png)
+
+### 4.3 Verify the application
+
+After a while, your deployment is active and you can test the endpoint
+
+![image](./media/images/active.png)
+
+The endpoint DNS address is available on the top-right side of the console. Click it.
+
+![image](./media/images/endpoint.png)
+
+You should get the following:
+
+![image](./media/images/app.png)
+
+## Conclusion
+Congratulations! You have successfully set up a To Do application using the Amazon Lightsail Container service. You now have a functional environment for hosting websites and applications that require a web server, database, and server-side scripting.
