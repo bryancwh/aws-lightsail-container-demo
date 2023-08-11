@@ -77,9 +77,56 @@ For more information refer to the [original workshop guide](https://catalog.us-e
 ### 3.1 Enable VPC peering
 In order for Lightsail resources to communicate with other AWS resources, you need to enable VPC peering between Lightsail and the default AWS VPC for the same region as your Lightsail resources. Note that Lightsail can only peer with the default AWS VPC.
 
+Step 1. Go to the Lightsail console home page and click Account in the top right corner. Choose Account from the pop out menu.
+
+![imgage](./media/images/account_menu.png)
+
+Step 2. Click on Advanced from the horizontal menu
+
+Step 3. Under VPC peering ensure the Enable VPC peering box is checked for the region where your application is deployed.
+
+![imgage](./media/images/vpc_peering.png)
+
 ### 3.2 Edit RDS Security Group
+The next step is to edit the security group for the RDS instance to allow traffic from the Lightsail subnet
+
+Step 1. Return to the RDS console
+
+Step 2. Under Resources click on DB Instances
+
+Step 3. Click on the name of the database you created at the beginning of the workshop
+
+Step 4. Under Connectivity and security click on the security group name
+
+![imgage](./media/images/rds_sg.png)
+
+Step 5. Click the Inbound tab near the bottom of the screen and click the Edit button
+
+![imgage](./media/images/sg_edit.png)
+
+Step 6. Click Add rule in the pop up box
+
+Step 7. From the Type drop down choose MySQL/Aurora
+
+Step 8. In the source box enter 172.26.0.0/16 (this is the CIDR address for the Lightsail subnet)
+
+![imgage](./media/images/sg_values.png)
+
+Step 9. Click Save
 
 ### 3.3 Use the RDS Endpoint in Flask application
+
+Step 1. Return to the RDS console entry for your RDS database
+
+Step 2. Under Connectivity and security copy the Endpoint value
+
+![imgage](./media/images/rds_endpoint.png)
+
+Step 3. Go to you Flask application [todo.py](./todo.py)
+
+Step 4. Change the SQLAlchemy Database URI to use the RDS DB Endpoint
+
+![imgage](./media/images/todo_code.png)
 
 ## Step 4: Deploy Container to Lightsail
 
