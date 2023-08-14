@@ -4,11 +4,11 @@ import pymysql
 
 app = Flask(__name__)
 
-# To Test Locally
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.db'
+# To use local database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todos.db'
 
-# To Deploy in Lightsail
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://<YOUR_USER>:<YOUR_PASSWORD>@<DB_ENDPOINT>:<DB_HOST>/<DB_INSTANCE>'
+# To use RDS database
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://<YOUR_USER>:<YOUR_PASSWORD>@<RDS_DB_ENDPOINT>:<PORT>/<DB_NAME>'
 
 db = SQLAlchemy(app)
 
@@ -34,7 +34,7 @@ def add_todo():
 
     return redirect(url_for('index'))
 
-@app.route('/complete/<int:todo_id>')
+@app.route('/complete/<int:todo_id>', methods=['PUT'])
 def complete_todo(todo_id):    
     
     with app.app_context():
@@ -47,7 +47,7 @@ def complete_todo(todo_id):
     
     return redirect(url_for('index'))
 
-@app.route('/delete/<int:todo_id>')
+@app.route('/delete/<int:todo_id>', methods=['DELETE'])
 def delete_todo(todo_id):
 
     with app.app_context():
