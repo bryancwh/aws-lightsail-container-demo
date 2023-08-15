@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Todo List</title>
+    <title>To-Do List</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
@@ -12,10 +12,10 @@
 </head>
 <body>
     <div class="container todo-container">
-        <h1 class="mt-4 mb-4">Todo List</h1>
+        <h1 class="mt-4 mb-4">To-Do List</h1>
         <form class="todo-form" action="/add" method="POST">
             <div class="input-group">
-                <input type="text" class="form-control" name="content" placeholder="Add a new todo" required>
+                <input type="text" class="form-control" name="content" placeholder="Add a new task" required>
                 <div class="input-group-append">
                     <button class="btn btn-primary" type="submit">Add</button>
                 </div>
