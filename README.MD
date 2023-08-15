@@ -1,5 +1,5 @@
-# Lightsail Workshop
-Welcome to the Lightsail Workshop! This guide will walk you through the process of setting up a To-Do List application on a Container using Amazon Lightsail.
+# Amazon Lightsail Workshop
+Welcome to the Amazon Lightsail Workshop! This guide will walk you through the process of setting up a To-Do List application on a Container using Amazon Lightsail.
 
 Specifically, this workshop will cover:
 - Creating the infrastructure you will use in the subsequent labs
@@ -67,7 +67,7 @@ In this section we will deploy an Amazon RDS MySQL database which will eventuall
 
 1. Since we selected `Free Tier` which is generally used for workshop and non-Production purpose where Multi-AZ deployment is not required, the **Availability and Durability** section will be disabled for you.
 
-1. In Settings section, fill in the following for each field:
+1. In **Settings** section, fill in the following for each field:
 
     | Parameter              | Value         |
     |------------------------|---------------|
@@ -118,7 +118,7 @@ In this workshop, we are using the Python Flask web framework to build the simpl
 
 1. Ensure the local database configuration is uncommented, and the RDS database configuration is commented out before saving the file. In this step, we are using a local SQL database, making it a monolith application.
 
-    ![image](./media/images/local_code.png)
+    ![image](./media/images/local_appconfig.png)
 
 1. Open [Dockerfile](./Dockerfile) and verify the build.
 
@@ -134,6 +134,8 @@ In this workshop, we are using the Python Flask web framework to build the simpl
     ![image](./media/images/app_local.png)
 
 ## Step 3: Deploy the application to Amazon Lightsail
+
+Now that the application is working locally, we will proceed to deploy it to the Cloud using Amazon Lightsail Containers.
 
 ### Step 3.1: Build and deploy the container to Docker Hub
 
@@ -165,11 +167,11 @@ Now that you have the container image on Docker Hub, let’s create a Lightsail 
 
 1. In **Select a Region** section, choose the correct AWS region (ask the facilitators if you are unsure) and make sure that it is in the same region as the Amazon RDS database that you have previously created.
 
-1. Select the size of the container you want to use in terms of vCPU and memory available to my application. Select the number of container instances you want to run in parallel for high availability or scalability reasons. 
+1. Select the size of the container you want to use in terms of vCPU and memory available to my application e.g. `Micro`. Select the number of container instances you want to run in parallel for high availability or scalability reasons.
 
     ![image](./media/images/container_capacity.png)
 
-    > **_NOTE:_** You can change the number of container instances or their power (vCPU and RAM) at any time, without interrupting the service. 
+    > **NOTE:** You can change the number of container instances and their power (vCPU and RAM) at any time, without interrupting the service.
 
 1. Click on `Set up deployment` and choose `Specify a custom deployment`. Choose a name for your image e.g. `my-lightsail-container` and give the address of the image on Docker Hub. Click on `Open ports` and fill in `8080` port.
 
@@ -188,17 +190,17 @@ After a few minutes, your deployment is active and you can then test the endpoin
 
 ![image](./media/images/active.png)
 
-The endpoint URL is available on the top-right side of the Lightsail console in the format of `<container-service-name>.<random-guid>.<AWS region>.cs.amazonlightsail.com`. Click it.
+The endpoint URL is available on the top-right side of the Lightsail console in the format of `<container-service-name>.<random-guid>.<AWS region>.cs.amazonlightsail.com`. Click on it.
 
 ![image](./media/images/endpoint.png)
 
-You should get see the To-Do List application:
+You should see the To-Do List application. Interact with the application by adding/updating/deleting tasks.
 
 ![image](./media/images/app.png)
 
 ## Step 4: Use RDS as the database
 
-Although the To-Do List application has been deployed to Amazon Lightsail, it is currently a monolithic application where the SQL database is within the same container as the application. This setup will make each container service as stateful and therefore we cannot scale the application independently from the database. In this section, we will replace the SQL database with the Amazon RDS MySQL database that we created earlier.
+Although the To-Do List application has been deployed to Amazon Lightsail, it is currently a monolithic application where the SQL database is within the same container as the application. The current setup makes each container service stateful and therefore we cannot scale the application independently from the database. In this section, we will replace the SQL database with the Amazon RDS MySQL database that we created earlier. By decoupling the database from the application, we can then scale up the application independently by adding more container capacity in Lightsail.
 
 ### Step 4.1: Enable VPC peering
 In order for Lightsail resources to communicate with other AWS resources in a VPC, you need to enable VPC peering between Lightsail and the default AWS VPC for the same AWS region as your Lightsail resources. Note that Lightsail can only peer with the default AWS VPC.
@@ -248,7 +250,7 @@ The next step is to ensure that the security group for the RDS instance allows t
 
 1. Comment out the local database configuration, uncomment the RDS database configuration and modify the `SQLAlchemy Database URI` with the RDS database endpoint and the username and password set during creation. For example `mysql+pymysql://awsuser:awspassword@<RDS_DB_ENDPOINT>:3306/lightsaildb`
 
-    ![image](./media/images/todo_code.png)
+    ![image](./media/images/rds_appconfig.png)
 
 ### Step 4.4: Create a new Lightsail deployment
 
@@ -257,16 +259,15 @@ Now that we have updated the application with the RDS endpoint, we need to updat
 1. In the Cloud9 terminal, run the following commands:
 
     ```
-        docker buildx build --platform linux/amd64 -t lightsail-todo .
-        # Push to Docker Hub
-        docker tag lightsail-todo <your Docker Hub username>/lightsail-todo:v2
-        docker push <your Docker Hub username>/lightsail-todo:v2
-
+    docker buildx build --platform linux/amd64 -t lightsail-todo .
+    # Push to Docker Hub
+    docker tag lightsail-todo <your Docker Hub username>/lightsail-todo:v2
+    docker push <your Docker Hub username>/lightsail-todo:v2
     ```
 
 1. Go to Amazon Lightsail console > Containers and click on the container service that we have created previously. Under **Deployments** tab, click `Modify your deployment` and add fill in the `Image` parameter with the v2 image URI, i.e. `<your Docker Hub username>/lightsail-todo:v2`.
 
-1. Click `Save and deploy`. You should now see 2 deployment versions with the version 2 in `Deploying` status.
+1. Click `Save and deploy`. You should now see 2 deployment versions with the version 2 in `Deploying` status and version 1 in `Active` status. Note that throughout the deployment process, the version 1 application will remain Active until version 2 is deployed, and there is no application downtime.
 
     ![image](./media/images/lightsail-deployment-versions.png)
 
