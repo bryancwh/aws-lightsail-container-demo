@@ -26,9 +26,13 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span class="{% if todo.completed %}completed{% endif %}">{{ todo.content }}</span>
                     {% if not todo.completed %}
-                        <a href="/complete/{{ todo.id }}" class="btn btn-success btn-sm">Mark as Completed</a>
+                        <form action="/complete/{{ todo.id }}" method="POST">
+                            <button class="btn btn-success btn-sm">Mark as Completed</button>
+                        </form>
                     {% endif %}
-                    <a href="/delete/{{ todo.id }}" class="btn btn-danger btn-sm">Delete</a>
+                    <form action="/delete/{{ todo.id }}" method="POST">
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </form>
                 </li>
             {% endfor %}
         </ul>

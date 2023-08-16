@@ -30,31 +30,27 @@ def add_todo():
         with db.session.begin():
             new_todo = Todo(content=content)
             db.session.add(new_todo)
-        # db.session.commit()
 
     return redirect(url_for('index'))
 
-@app.route('/complete/<int:todo_id>', methods=['PUT'])
+@app.route('/complete/<int:todo_id>', methods=['POST'])
 def complete_todo(todo_id):    
     
     with app.app_context():
         with db.session.begin():
-            todo = Todo.query.get(todo_id)
-            todo_content = todo.content
-            db.session.delete(todo)
-            new_todo = Todo(id=todo_id,content=todo_content,completed=True)
-            db.session.add(new_todo)
+            todo = db.session.get(Todo, todo_id)
+            todo.completed = True
+            db.session.commit()
     
     return redirect(url_for('index'))
 
-@app.route('/delete/<int:todo_id>', methods=['DELETE'])
+@app.route('/delete/<int:todo_id>', methods=['POST'])
 def delete_todo(todo_id):
 
     with app.app_context():
         with db.session.begin():
-            todo = Todo.query.get(todo_id)
+            todo = db.session.get(Todo, todo_id)
             db.session.delete(todo)
-        # db.session.commit()
 
     return redirect(url_for('index')) 
 
