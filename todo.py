@@ -19,7 +19,7 @@ class Todo(db.Model):
 
 @app.route('/')
 def index():
-    todos = Todo.query.all()
+    todos = db.session.query(Todo).all()
     return render_template('index.html', todos=todos)
 
 @app.route('/add', methods=['POST'])
